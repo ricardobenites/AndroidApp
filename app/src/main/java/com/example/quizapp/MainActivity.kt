@@ -1,6 +1,7 @@
 package com.example.quizapp
 
 import android.content.Intent
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -14,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         window.decorView.systemUiVisibility= View.SYSTEM_UI_FLAG_FULLSCREEN
+
         button.setOnClickListener {
             if(input.text.toString().isEmpty()){
                 Toast.makeText( this, "Ingresa tu Nombre",Toast.LENGTH_SHORT).show()
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
                 var intent = Intent(this,PreguntasActivity::class.java)
                 intent.putExtra("${setData.name}",input.text.toString())
                 startActivity(intent)
+
                 finish()
             }
         }

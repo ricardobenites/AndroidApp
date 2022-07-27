@@ -11,6 +11,7 @@ object setData {
         var question1 = QuestionData(
             "Cual es mi segundo apellido?",
             1,
+            "badbunny_pfknr",
             "Contreras",
             "ChupaPoto",
             "MasterChupaPoto",
@@ -21,6 +22,7 @@ object setData {
         var question2 = QuestionData(
             "Como se llama Rauw Alejandro?",
             2,
+            "agua",
             "Benito",
             "Rauw Alejandro po",
             "Papasito",
@@ -31,6 +33,7 @@ object setData {
         var question3 = QuestionData(
             "Nirvana por siempre?",
             3,
+            "careless_whisper",
             "Nelson",
             "ChupaPoto",
             "Obvio",
@@ -41,6 +44,7 @@ object setData {
         var question4 = QuestionData(
             "Sale sus traguitos este viernes?",
             4,
+            "ella_y_yo",
             "De una compita, yo compro las birras",
             "Pakepo",
             "Me enfermaré ese dia",
@@ -51,6 +55,7 @@ object setData {
         var question5 = QuestionData(
             "En que me gasto la plata?",
             4,
+            "maluma_borrocasseste",
             "En weas valiosas",
             "En puras weas pa tomar, borracho",
             "Lo dono",

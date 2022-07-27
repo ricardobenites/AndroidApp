@@ -4,12 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.activity_preguntas.*
 
 
@@ -22,16 +25,73 @@ class PreguntasActivity : AppCompatActivity() {
     private var questionList:ArrayList<QuestionData> ? = null
     private var selectedOption:Int=0
 
+    val fd by lazy {
+        assets.openFd(cancionActual)
+    }
+
+    val mp by lazy {
+        val m = MediaPlayer()
+        m.setDataSource(
+            fd.fileDescriptor,
+            fd.startOffset,
+            fd.length
+        )
+        fd.close()
+        m.prepare()
+        m
+    }
+
+    val nombreCancion by lazy {
+        findViewById<TextView>(R.id.nombreCanción)
+    }
+
+    val canciones by lazy {
+        val nombreFicheros = assets.list("")?.toList() ?: listOf()
+        nombreFicheros.filter { it.contains(".mp3") }
+    }
+
+    var cancionActualIndex = 0
+        set(value){
+            var v = if(value==-1){
+                canciones.size-1
+            }
+            else{
+                value%canciones.size
+            }
+            field = v
+            cancionActual = canciones[v]
+        }
+
+    val controllers by lazy{
+        listOf(R.id.submit).map{
+            findViewById<MaterialButton>(it)
+        }
+    }
+
+    object ci{
+        val submit = 3
+    }
+
+
+
+    lateinit var cancionActual:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preguntas)
 
+        controllers[ci.submit].setOnClickListener(this::nextSong)
+
         Name=intent.getStringExtra(setData.name)
 
         questionList=setData.getQuestion()
 
+        cancionActual= canciones[cancionActualIndex]
+        nombreCancion.text= cancionActual
+
         setQuestion()
+        mp.start()
+
 
         opt_1.setOnClickListener{
             selectedOptionStyle(opt_1, 1)
@@ -53,6 +113,7 @@ class PreguntasActivity : AppCompatActivity() {
                 if(selectedOption!=question.correct_asn)
                 {
                     setColor(selectedOption,R.drawable.incorrect_question_option)
+
                 }else{
                     score++;
                 }
@@ -107,11 +168,13 @@ class PreguntasActivity : AppCompatActivity() {
         val question = questionList!![currentPosition-1]
         setOptionStyle()
 
+
         progress_bar.progress=currentPosition
         progress_bar.max=questionList!!.size
         progress_text.text="${currentPosition}"+"/"+"${questionList!!.size}"
 
         question_text.text=question.question
+        nombreCancion.visibility = View.VISIBLE
         opt_1.text=question.option_one
         opt_2.text=question.option_two
         opt_3.text=question.option_three
@@ -141,5 +204,24 @@ class PreguntasActivity : AppCompatActivity() {
         view.typeface= Typeface.DEFAULT_BOLD
         view.setTextColor(Color.parseColor("#000000"))
 
+    }
+
+
+    fun nextSong(v:View){
+        cancionActualIndex++
+        refreshSong()
+    }
+
+    fun refreshSong(){
+        mp.reset()
+        val fd = assets.openFd(cancionActual)
+        mp.setDataSource(
+            fd.fileDescriptor,
+            fd.startOffset,
+            fd.length
+        )
+        mp.prepare()
+        mp.start()
+        nombreCancion.text = cancionActual
     }
 }
